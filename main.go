@@ -8,11 +8,8 @@ import (
     "net/http"
 )
 
-const (
-    listenAddr = "localhost:3000" // Server address
-)
-
 var (
+    listenAddr = ":" + os.Getenv("PORT") // Server address
     pwd, _      = os.Getwd()
     RootTemp    = template.Must (template.ParseFiles (pwd + "/index.html"))
     JSON        = websocket.JSON
