@@ -8,23 +8,34 @@ import (
     "strings"
 )
 
-type Compiler struct {
-    Executable  string
-    Gcc         *exec.Cmd
+type Program struct {
+    Label  string
     Program     *exec.Cmd
 }
 
-func compile (source string, executable string) *Compiler {
-    return &Compiler {
-        Executable: executable,
-        Gcc: exec.Command("gcc", "-Wall","-Werror","-Wextra","-o " + executable,source),
+const (
+    EXECUTABLE = "temporal"
+)
+
+func Compiler (source string) *Program {
+
+    return &Program {
+        Label: "Compiler",
+        Program: exec.Command("gcc", "-Wall","-Werror",
+                              "-Wextra","-o " + EXECUTABLE, source),
+    }
+}
+
+func NewProgram(executable string) *Program {
+    return &Program {
+        Label: executable,
         Program: nil,
     }
 }
 
-func (c *Compiler) RunProgram (channelOut chan string, input string) {
+func (c *Program) Run(channelOut chan string, input string) {
     var out bytes.Buffer
-    c.Program = exec.Command (c.Executable)
+    c.Program = exec.Command (EXECUTABLE)
     c.Program.Stdout = &out
     c.Program.Stdin = strings.NewReader (input)
 
@@ -37,12 +48,12 @@ func (c *Compiler) RunProgram (channelOut chan string, input string) {
 }
 
 func main () {
-    c := compile ("algo", "chau")
+    c := Compiler("chau")
     var out bytes.Buffer
-    c.Gcc.Stdout = &out
-    err := c.Gcc.Run()
+    c.Program.Stdout = &out
+    err := c.Program.Run()
     if err != nil {
         log.Fatal (err)
     }
-    fmt.Printf ("[" + c.Executable + "]\n", out.String())
+    fmt.Printf ("[" + c.Label + "]\n", out.String())
 }
