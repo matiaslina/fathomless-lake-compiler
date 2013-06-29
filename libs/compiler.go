@@ -21,7 +21,7 @@ func Compiler (source string) *Program {
     return &Program {
         Label: "Compiler",
         Program: exec.Command("gcc", "-Wall","-Werror",
-                              "-Wextra","-o " + EXECUTABLE, source),
+                              "-Wextra","-o" + EXECUTABLE, source),
     }
 }
 
@@ -44,6 +44,9 @@ func (c *Program) Run(channelOut chan string, input string) {
         channelOut <- err.Error()
         return
     }
+    if c.Label == "Compiler" {
+        channelOut <- "Succesful!"
+    }
     channelOut <- out.String()
 }
 
@@ -51,7 +54,7 @@ func main () {
     var out bytes.Buffer
     ch := make (chan string)
     var output string
-    c := Compiler("chau")
+    c := Compiler("lucky.c")
     c.Program.Stdout = &out
     go c.Run(ch, "")
     output =  <- ch
