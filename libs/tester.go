@@ -19,6 +19,7 @@ type JSONTest struct {
     ID              string
     Program         string
     Source          string
+    CouldCompile    bool
     Count           int
     PassedTest      []bool
     Status          []string
@@ -29,6 +30,7 @@ func NewJSONTest (programName,source string, test int) *JSONTest {
         ID: getNewID (programName),
         Program: programName,
         Source: source,
+        CouldCompile: false,
         Count: test,
         PassedTest: make ([]bool, test+1),
         Status: make ([]string, test+1),
