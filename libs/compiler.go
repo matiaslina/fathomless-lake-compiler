@@ -2,7 +2,6 @@ package main
 
 import (
     "bytes"
-    "log"
     "fmt"
     "os/exec"
     "strings"
@@ -35,9 +34,10 @@ func NewProgram(executable string) *Program {
 
 func (c *Program) Run(channelOut chan string, input string) {
     var out bytes.Buffer
-    c.Program = exec.Command (EXECUTABLE)
     c.Program.Stdout = &out
-    c.Program.Stdin = strings.NewReader (input)
+    if input != "" {
+        c.Program.Stdin = strings.NewReader (input)
+    }
 
     err := c.Program.Run()
     if err != nil {
@@ -48,12 +48,12 @@ func (c *Program) Run(channelOut chan string, input string) {
 }
 
 func main () {
-    c := Compiler("chau")
     var out bytes.Buffer
+    ch := make (chan string)
+    var output string
+    c := Compiler("chau")
     c.Program.Stdout = &out
-    err := c.Program.Run()
-    if err != nil {
-        log.Fatal (err)
-    }
-    fmt.Printf ("[" + c.Label + "]\n", out.String())
+    go c.Run(ch, "")
+    output =  <- ch
+    fmt.Printf ("[" + c.Label + "] " + output + "\n")
 }
