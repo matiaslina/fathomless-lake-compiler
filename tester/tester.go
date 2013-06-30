@@ -5,6 +5,7 @@ import (
     "crypto/md5"
     "io"
     "fmt"
+    "log"
 )
 
 func getNewID (str string) string{
@@ -50,6 +51,47 @@ func (jt *JSONTest) SetPassedTest (n int, passed bool, status string) {
     jt.Status[n] = fmt.Sprintf ("Test %d: %s", n, status)
 }
 
+type Tester struct {
+    Inputs  []string
+    Outputs []string
+}
+
+func NewTester (in,out []string) *Tester {
+    if len(in) == len(out) {
+        return &Tester {
+            Inputs: in,
+            Outputs: out,
+        }
+    } else {
+        log.Fatal ("The test aren't equals")
+        return nil
+    }
+}
+
+func (t *Tester) Test (name,source string, in, out []string) *JSONTest {
+    var data Data
+    compiler := Compiler (source)
+    output := make (chan Data)
+    jsonTest := NewJSONTest (name, source, len (in))
+    go compiler.Run (output,"")
+    if data = <-output; data.Err != nil {
+        jsonTest.CouldCompile = false
+        return jsonTest
+    }
+
+    for i := 0; i < len (out);i++ {
+        go NewProgram(EXECUTABLE).Run (output,in[i])
+    }
+    
+    i := 1
+    for i < len(in)+1 {
+        data = <-output
+        jsonTest.SetPassedTest (i, data.Output == data.Input, "debug")
+        i++
+    }
+
+    return jsonTest
+}
 
 /* Don't mind about this, should be eliminated in
  * a short time 
