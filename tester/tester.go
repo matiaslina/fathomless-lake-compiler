@@ -1,4 +1,4 @@
-package main
+package tester
 
 import (
     "encoding/json"
@@ -53,9 +53,8 @@ func (jt *JSONTest) SetPassedTest (n int, passed bool, status string) {
 
 /* Don't mind about this, should be eliminated in
  * a short time 
- */
 func main () {
-    /* Checking the jsonify */
+    //Checking the jsonify 
     a := NewJSONTest ("lucky","lucky.c",3)
     a.SetPassedTest(1, true, "OK")
     a.SetPassedTest(2, false, "Incorrect answer")
@@ -67,3 +66,4 @@ func main () {
         fmt.Println(b)
     }
 }
+ */

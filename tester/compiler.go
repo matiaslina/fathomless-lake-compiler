@@ -1,8 +1,7 @@
-package main
+package tester
 
 import (
     "bytes"
-    "fmt"
     "os/exec"
     "strings"
 )
@@ -52,7 +51,7 @@ func (c *Program) Run(channelOut chan Data, input string) {
         Input:  input,
     }
 }
-
+/*
 func main () {
     var out bytes.Buffer
     ch := make (chan Data)
@@ -62,3 +61,4 @@ func main () {
     data :=  <- ch
     fmt.Printf ("[" + c.Label + "] " + data.Output + "\n")
 }
+*/

@@ -4,6 +4,9 @@ import (
     "html/template"
     "os"
     "net/http"
+    "log"
+    "sheltered-inlet/tester"
+    "fmt"
 )
 
 var (
@@ -24,9 +27,14 @@ func RootHandler (w http.ResponseWriter, req *http.Request) {
 }
 
 func main () {
+    log.Println("Server running at port " + listenAddr)
+    a := tester.NewJSONTest ("hola","chau",1)
+    s, _ := a.Jsonify ()
+    fmt.Println ("JSON -> ", s)
     err := http.ListenAndServe (listenAddr, nil)
     if err != nil {
         panic ("Listen and serve error: " + err.Error())
     }
+
 }
 
