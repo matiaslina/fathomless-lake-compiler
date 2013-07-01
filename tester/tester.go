@@ -29,7 +29,7 @@ func NewJSONTest (programName,source string, test int) *JSONTest {
 }
 
 func (jt *JSONTest) Jsonify () (string, error) {
-    b, err := json.Marshal (jt)
+    b, err := json.MarshalIndent (jt, "", "  ")
     if err != nil {
         return "", err
     }
