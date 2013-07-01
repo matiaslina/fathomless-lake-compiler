@@ -58,20 +58,20 @@ func (t *Tester) Test (name,source string, in, out []string) *JSONTest {
     compiler := Compiler (source)
     output := make (chan Data)
     jsonTest := NewJSONTest (name, source, len (in))
-    go compiler.Run (output,"")
+    go compiler.Run (output,"", 0)
     if data = <-output; data.Err != nil {
         jsonTest.CouldCompile = false
         return jsonTest
     }
 
     for i := 0; i < len (out);i++ {
-        go NewProgram(EXECUTABLE).Run (output,in[i])
+        go NewProgram(EXECUTABLE).Run (output,in[i], i)
     }
     
     i := 1
     for i < len(in)+1 {
         data = <-output
-        jsonTest.SetPassedTest (i, data.Output == data.Input, "debug")
+        jsonTest.SetPassedTest (data.Number, data.Output == data.Input, "debug")
         i++
     }
 

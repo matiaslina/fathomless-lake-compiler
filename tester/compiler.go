@@ -26,7 +26,7 @@ func NewProgram(executable string) *Program {
     }
 }
 
-func (c *Program) Run(channelOut chan Data, input string) {
+func (c *Program) Run(channelOut chan Data, input string, n int) {
     var out bytes.Buffer
     c.Program.Stdout = &out
     if input != "" {
@@ -35,6 +35,7 @@ func (c *Program) Run(channelOut chan Data, input string) {
 
     err := c.Program.Run()
     channelOut <- Data {
+        Number: n,
         Output: out.String(),
         Err:    err,
         Input:  input,

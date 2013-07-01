@@ -10,6 +10,7 @@ type Program struct {
 }
 
 type Data struct {
+    Number  int
     Err     error
     Input   string
     Output  string
