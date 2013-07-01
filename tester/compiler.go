@@ -6,17 +6,6 @@ import (
     "strings"
 )
 
-type Program struct {
-    Label  string
-    Program     *exec.Cmd
-}
-
-type Data struct {
-    Err     error
-    Input   string
-    Output  string
-}
-
 const (
     EXECUTABLE = "temporal"
 )
@@ -51,14 +40,3 @@ func (c *Program) Run(channelOut chan Data, input string) {
         Input:  input,
     }
 }
-/*
-func main () {
-    var out bytes.Buffer
-    ch := make (chan Data)
-    c := Compiler("lucky.c")
-    c.Program.Stdout = &out
-    go c.Run(ch, "")
-    data :=  <- ch
-    fmt.Printf ("[" + c.Label + "] " + data.Output + "\n")
-}
-*/

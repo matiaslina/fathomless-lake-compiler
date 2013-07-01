@@ -16,16 +16,6 @@ func getNewID (str string) string{
     return ret
 }
 
-type JSONTest struct {
-    ID              string
-    Program         string
-    Source          string
-    CouldCompile    bool
-    Count           int
-    PassedTest      []bool
-    Status          []string
-}
-
 func NewJSONTest (programName,source string, test int) *JSONTest {
     return &JSONTest {
         ID: getNewID (programName),
@@ -49,11 +39,6 @@ func (jt *JSONTest) Jsonify () (string, error) {
 func (jt *JSONTest) SetPassedTest (n int, passed bool, status string) {
     jt.PassedTest[n] = passed
     jt.Status[n] = fmt.Sprintf ("Test %d: %s", n, status)
-}
-
-type Tester struct {
-    Inputs  []string
-    Outputs []string
 }
 
 func NewTester (in,out []string) *Tester {
@@ -92,20 +77,3 @@ func (t *Tester) Test (name,source string, in, out []string) *JSONTest {
 
     return jsonTest
 }
-
-/* Don't mind about this, should be eliminated in
- * a short time 
-func main () {
-    //Checking the jsonify 
-    a := NewJSONTest ("lucky","lucky.c",3)
-    a.SetPassedTest(1, true, "OK")
-    a.SetPassedTest(2, false, "Incorrect answer")
-
-    b, err := a.Jsonify ()
-    if err != nil {
-        fmt.Println(getNewID ("Holas"))
-    } else {
-        fmt.Println(b)
-    }
-}
- */
