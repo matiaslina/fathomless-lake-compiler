@@ -53,6 +53,10 @@ func NewTester (in,out []string) *Tester {
     }
 }
 
+func nonEqualIO (in,out string) string {
+    return "[Error] Founded " + out + " Expected " + in
+}
+
 func (t *Tester) Test (name,source string, in, out []string) *JSONTest {
     var data Data
     compiler := Compiler (source)
@@ -71,7 +75,19 @@ func (t *Tester) Test (name,source string, in, out []string) *JSONTest {
     i := 1
     for i < len(in)+1 {
         data = <-output
-        jsonTest.SetPassedTest (data.Number, data.Output == data.Input, "debug")
+        var status string
+        passed := (data.Input == data.Output)
+        
+        if data.Err != nil {
+            status = "[Error] -> " + data.Err.Error()
+        } else {
+            if passed {
+                status = "OK"
+            } else {
+                status = nonEqualIO(data.Input,data.Output)
+            }
+        }
+        jsonTest.SetPassedTest (data.Number, passed, status)
         i++
     }
 
