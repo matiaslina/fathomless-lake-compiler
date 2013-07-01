@@ -37,10 +37,12 @@ func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
     if err != nil {
         fmt.Println("[step 2]Oh.. we have an error with the file :/")
     }
-    err = ioutil.WriteFile (handler.Filename, data, 0755)
+    err = ioutil.WriteFile ("tmp/" + handler.Filename, data, 0755)
     if err != nil {
         fmt.Println ("[step 3] Oh.. can't set the file in the disk :/")
     }
+    
+    http.Redirect(w, req, "http://localhost:3000", http.StatusFound)
 }
 
 func main () {
