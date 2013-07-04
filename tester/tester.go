@@ -65,21 +65,26 @@ func (t *Tester) Test (name,source string, in, out []string) *JSONTest {
     go compiler.Run (output,"", 0)
     if data = <-output; data.Err != nil {
         jsonTest.CouldCompile = false
+        log.Fatal ("Error!" + data.Err.Error())
         return jsonTest
     }
+    jsonTest.CouldCompile = true
 
     for i := 0; i < len (out);i++ {
+        log.Println ("Running app, test", i)
         go NewProgram(EXECUTABLE).Run (output,in[i], i)
     }
     
     i := 1
     for i < len(in)+1 {
+        log.Println ("Fetching test n", i)
         data = <-output
         var status string
         passed := (data.Input == data.Output)
         
         if data.Err != nil {
             status = "[Error] -> " + data.Err.Error()
+            log.Fatal ("Error!" + data.Err.Error())
         } else {
             if passed {
                 status = "OK"

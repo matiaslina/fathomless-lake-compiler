@@ -22,7 +22,7 @@ func Compiler (source string) *Program {
 func NewProgram(executable string) *Program {
     return &Program {
         Label: executable,
-        Program: nil,
+        Program: exec.Command ("./" + EXECUTABLE),
     }
 }
 

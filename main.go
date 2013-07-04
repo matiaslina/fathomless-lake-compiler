@@ -11,9 +11,13 @@ import (
 )
 
 var (
-    listenAddr = ":" + os.Getenv("PORT") // Server address
+    listenAddr  = ":" + os.Getenv("PORT") // Server address
     pwd, _      = os.Getwd()
     RootTemp    = template.Must (template.ParseFiles (pwd + "/index.html"))
+    Inputs      = []string{"1","2","3"}
+    Outputs     = []string{"2","3","4"}
+    MyTester    = tester.NewTester(Inputs, Outputs)
+    JsonAPI     = ""
 )
 
 func init () {
@@ -29,6 +33,10 @@ func RootHandler (w http.ResponseWriter, req *http.Request) {
     }
 }
 
+func getJsonTest (jtc chan *tester.JSONTest, name, source string) {
+    jtc <- MyTester.Test(name, source, Inputs, Outputs)
+}
+
 func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
     file, handler, err := req.FormFile ("file")
     if err != nil {
@@ -42,16 +50,18 @@ func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
     if err != nil {
         fmt.Println ("[step 3] Oh.. can't set the file in the disk :/")
     }
+    ch := make (chan *tester.JSONTest)
+    go getJsonTest(ch, "prueba", "tmp/" + handler.Filename)
     
+    log.Println("Running app")
+    jt := <- ch
     http.Redirect(w, req, "http://localhost:3000", http.StatusFound)
+    JsonAPI, _ = jt.Jsonify()
 }
 
 func APIHandler (w http.ResponseWriter, req *http.Request) {
     w.Header().Set("Content-Type", "application/json")
-    a := tester.NewJSONTest ("Lucky number","lucky.c",1)
-    a.SetPassedTest (1, true, "[OK] test passed!")
-    s, _ := a.Jsonify ()
-    fmt.Fprintf (w, s)
+    fmt.Fprintf (w, JsonAPI)
 }
 
 func main () {
