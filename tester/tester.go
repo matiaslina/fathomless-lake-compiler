@@ -8,6 +8,7 @@ import (
     "log"
 )
 
+// Create a unique hash to store the program with an ID
 func getNewID (str string) string{
     var ret string
     md5sum := md5.New()
@@ -16,6 +17,7 @@ func getNewID (str string) string{
     return ret
 }
 
+// Creates a new generic JsonTest. 
 func NewJSONTest (programName,source string, test int) *JSONTest {
     return &JSONTest {
         ID: getNewID (programName),
@@ -28,6 +30,7 @@ func NewJSONTest (programName,source string, test int) *JSONTest {
     }
 }
 
+// Jsonify converts the struct into an json string well formatted
 func (jt *JSONTest) Jsonify () (string, error) {
     b, err := json.MarshalIndent (jt, "", "  ")
     if err != nil {
@@ -36,11 +39,13 @@ func (jt *JSONTest) Jsonify () (string, error) {
     return string(b), err
 }
 
+// Set a new test with the value if the test pass or not.
 func (jt *JSONTest) SetPassedTest (n int, passed bool, status string) {
     jt.PassedTest[n] = passed
     jt.Status[n] = fmt.Sprintf ("Test %d: %s", n, status)
 }
 
+// Creates a new Tester class. This is the main struct in the program.
 func NewTester (in,out []string) *Tester {
     if len(in) == len(out) {
         return &Tester {
@@ -57,6 +62,7 @@ func nonEqualIO (in,out string) string {
     return "[Error] Founded " + out + " Expected " + in
 }
 
+// Main function in the program. Runs a single gorutine for every test.
 func (t *Tester) Test (name,source string, in, out []string) *JSONTest {
     var data Data
     compiler := Compiler (source)
