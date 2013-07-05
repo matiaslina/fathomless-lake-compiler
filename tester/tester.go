@@ -12,7 +12,7 @@ func getNewID (str string) string{
     var ret string
     md5sum := md5.New()
     io.WriteString(md5sum, str)
-    ret = fmt.Sprintf("%x",md5sum.Sum(nil))
+    ret = fmt.Sprintf("%x",md5sum.Sum([]byte(str)))
     return ret
 }
 

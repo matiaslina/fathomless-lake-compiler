@@ -7,7 +7,8 @@ import (
 )
 
 const (
-    EXECUTABLE = "temporal"
+    EXECUTABLE  = "temporal"
+    FOLDER      = "tmp/"
 )
 
 func Compiler (source string) *Program {
@@ -15,14 +16,14 @@ func Compiler (source string) *Program {
     return &Program {
         Label: "Compiler",
         Program: exec.Command("gcc", "-Wall","-Werror",
-                              "-Wextra","-o" + EXECUTABLE, source),
+                              "-Wextra","-o" + FOLDER + EXECUTABLE, source),
     }
 }
 
 func NewProgram(executable string) *Program {
     return &Program {
         Label: executable,
-        Program: exec.Command ("./" + EXECUTABLE),
+        Program: exec.Command ("./" + FOLDER + EXECUTABLE),
     }
 }
 
@@ -35,7 +36,7 @@ func (c *Program) Run(channelOut chan Data, input string, n int) {
 
     err := c.Program.Run()
     channelOut <- Data {
-        Number: n,
+        Number: n+1,
         Output: out.String(),
         Err:    err,
         Input:  input,

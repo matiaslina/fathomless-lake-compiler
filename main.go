@@ -8,16 +8,23 @@ import (
     "sheltered-inlet/tester"
     "fmt"
     "io/ioutil" 
+    "sheltered-inlet/firebase"
 )
 
 var (
     listenAddr  = ":" + os.Getenv("PORT") // Server address
     pwd, _      = os.Getwd()
     RootTemp    = template.Must (template.ParseFiles (pwd + "/index.html"))
+    
+    Firebase    = firebase.New ("https://fathomless-lake.firebaseio.com/")
+    // This should be changed for something more cute :3
     Inputs      = []string{"1","2","3"}
     Outputs     = []string{"2","3","4"}
     MyTester    = tester.NewTester(Inputs, Outputs)
-    JsonAPI     = ""
+)
+
+const (
+    FIREBASE_COMPILER_PATH = "/compiler/"
 )
 
 func init () {
@@ -38,6 +45,7 @@ func getJsonTest (jtc chan *tester.JSONTest, name, source string) {
 }
 
 func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
+    // Upload the file.
     file, handler, err := req.FormFile ("file")
     if err != nil {
         fmt.Println("[step 1]Oh.. we have an error with the file :/")
@@ -51,17 +59,31 @@ func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
         fmt.Println ("[step 3] Oh.. can't set the file in the disk :/")
     }
     ch := make (chan *tester.JSONTest)
-    go getJsonTest(ch, "prueba", "tmp/" + handler.Filename)
+    go getJsonTest(ch, "prueba", tester.FOLDER + handler.Filename)
     
     log.Println("Running app")
+    
     jt := <- ch
+    // Store in firebase.
+    Firebase.BuildURL (FIREBASE_COMPILER_PATH + jt.ID)
+    Firebase.Set (FIREBASE_COMPILER_PATH + jt.ID, jt)
+    log.Println ("Show json @ " + FIREBASE_COMPILER_PATH + jt.ID)
+    
+    // And redirect far away from here.
     http.Redirect(w, req, "http://localhost:3000", http.StatusFound)
-    JsonAPI, _ = jt.Jsonify()
 }
 
+
+// API handler, needed to fetch data from fathomless-lake
 func APIHandler (w http.ResponseWriter, req *http.Request) {
     w.Header().Set("Content-Type", "application/json")
-    fmt.Fprintf (w, JsonAPI)
+    // Get the data from firebase
+    data, err := Firebase.Get(FIREBASE_COMPILER_PATH)
+    if err != nil {
+        fmt.Fprintf (w,"Ooops, something happen \n", err.Error())
+        return
+    }
+    fmt.Fprintf (w, string(data))
 }
 
 func main () {
