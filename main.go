@@ -14,7 +14,7 @@ import (
 var (
     listenAddr  = ":" + os.Getenv("PORT") // Server address
     pwd, _      = os.Getwd()
-    RootTemp    = template.Must (template.ParseFiles (pwd + "/index.html"))
+    RootTemp    = template.Must (template.ParseFiles (pwd + "/views/index.html"))
     
     Firebase    = firebase.New ("https://fathomless-lake.firebaseio.com/")
     // This should be changed for something more cute :3
