@@ -1,14 +1,16 @@
 package main
 
 import (
-    "html/template"
-    "os"
-    "net/http"
-    "log"
-    "sheltered-inlet/tester"
     "fmt"
+    "html/template"
     "io/ioutil" 
+    "log"
+    "net/http"
+    "os"
+    "os/signal"
+    "sheltered-inlet/tester"
     "sheltered-inlet/firebase"
+    "syscall"
 )
 
 var (
@@ -86,8 +88,23 @@ func APIHandler (w http.ResponseWriter, req *http.Request) {
     fmt.Fprintf (w, string(data))
 }
 
+func SignalHandlers (signals chan os.Signal) {
+    go func () {
+        sig := <- signals
+        switch sig {
+            case syscall.SIGINT:
+                fmt.Printf("\nClosing the server...\nBye bye!\n")
+                os.Exit(0)
+        }
+    }()
+}
+
 func main () {
     log.Println("Server running at port " + listenAddr)
+    signals := make (chan os.Signal, 1)
+
+    signal.Notify(signals, syscall.SIGINT, syscall.SIGUSR1)
+    SignalHandlers (signals)
     err := http.ListenAndServe (listenAddr, nil)
     if err != nil {
         panic ("Listen and serve error: " + err.Error())
