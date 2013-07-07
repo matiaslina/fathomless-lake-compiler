@@ -17,6 +17,7 @@ var (
     listenAddr  = ":" + os.Getenv("PORT") // Server address
     pwd, _      = os.Getwd()
     RootTemp    = template.Must (template.ParseFiles (pwd + "/views/index.html"))
+    DocTemp     = template.Must (template.ParseFiles (pwd + "/views/docs.html"))
     
     Firebase    = firebase.New ("https://fathomless-lake.firebaseio.com/")
     // This should be changed for something more cute :3
@@ -33,6 +34,15 @@ func init () {
     http.HandleFunc ("/", RootHandler)
     http.HandleFunc ("/submitted", SubmittedHandler)
     http.HandleFunc ("/api", APIHandler)
+    http.HandleFunc ("/docs", DocsHandler)
+    http.Handle ("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir("views/styles"))))
+}
+
+func DocsHandler (w http.ResponseWriter, req *http.Request) {
+    err := DocTemp.Execute (w, listenAddr)
+    if err != nil {
+        http.Error (w, err.Error(), http.StatusInternalServerError)
+    }
 }
 
 func RootHandler (w http.ResponseWriter, req *http.Request) {
