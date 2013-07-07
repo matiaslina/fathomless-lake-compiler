@@ -8,8 +8,8 @@ import (
     "net/http"
     "os"
     "os/signal"
-    "fathomless-lake-compiler/tester"
-    "fathomless-lake-compiler/firebase"
+    "./tester"
+    "./firebase"
     "syscall"
 )
 
