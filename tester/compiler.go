@@ -2,7 +2,6 @@
 package tester
 
 import (
-    "bytes"
     "os/exec"
     "strings"
 )
@@ -11,6 +10,27 @@ const (
     EXECUTABLE  = "temporal"
     FOLDER      = "tmp/"
 )
+
+// An abstract layer of a program.
+type Program struct {
+    // A label for the program.
+    Label  string
+    // This is the command that is executed for the program to run.
+    Program     *exec.Cmd
+}
+
+// The data struct represents the number of the test and the I/O
+type Data struct {
+    // Number of the test.
+    Number  int
+    // This field is setted if the program runs with a problem
+    // (Pretty useful)
+    Err     error
+    // The parameters passed by stdin
+    Input   string
+    // Output of the program.
+    Output  string
+}
 
 // Creates a compiler for the program, the output it's the same
 // for every program since the objective it's not to store the 
@@ -36,16 +56,14 @@ func NewProgram(executable string) *Program {
 // The output is passed by a channel with the purpose of using
 // gorutines in the main program.
 func (c *Program) Run(channelOut chan Data, input string, n int) {
-    var out bytes.Buffer
-    c.Program.Stdout = &out
     if input != "" {
         c.Program.Stdin = strings.NewReader (input)
     }
 
-    err := c.Program.Run()
+    out, err := c.Program.Output()
     channelOut <- Data {
-        Number: n+1,
-        Output: out.String(),
+        Number: n,
+        Output: string(out),
         Err:    err,
         Input:  input,
     }

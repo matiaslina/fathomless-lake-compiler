@@ -21,9 +21,8 @@ var (
     
     Firebase    = firebase.New ("https://fathomless-lake.firebaseio.com/")
     // This should be changed for something more cute :3
-    Inputs      = []string{"1","2","3"}
-    Outputs     = []string{"2","3","4"}
-    MyTester    = tester.NewTester(Inputs, Outputs)
+    Inputs      = []string{"","1","2","3"}
+    Outputs     = []string{"","2","3","4"}
 )
 
 const (
@@ -52,8 +51,9 @@ func RootHandler (w http.ResponseWriter, req *http.Request) {
     }
 }
 
-func getJsonTest (jtc chan *tester.JSONTest, name, source string) {
-    jtc <- MyTester.Test(name, source, Inputs, Outputs)
+func StartTest (tc chan *tester.Tester, name, source string) {
+    MyTester := tester.NewTester (name, source, Inputs, Outputs)
+    tc <- MyTester.RunTest()
 }
 
 func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
@@ -70,8 +70,8 @@ func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
     if err != nil {
         fmt.Println ("[step 3] Oh.. can't set the file in the disk :/")
     }
-    ch := make (chan *tester.JSONTest)
-    go getJsonTest(ch, "prueba", tester.FOLDER + handler.Filename)
+    ch := make (chan *tester.Tester)
+    go StartTest(ch, "prueba", tester.FOLDER + handler.Filename)
     
     log.Println("Running app")
     
