@@ -16,12 +16,9 @@
 <link type="text/css" rel="stylesheet" href="/styles/style.css" >
 </head>
 <body>
-
-	<h1 style="margin-left:10px; font-size:26px;">Tester Library</h1>
-		
-		<div id="short-nav">
+<div id="short-nav">
 			<dl>
-			<dd><code style="color: #d22;"><b>import "./tester"</b></code></dd>
+                <dd><code><h2>import "./tester"</h2></code></dd>
 			</dl>
 			<dl>
 			<dd><a href="#pkg-overview" class="overviewLink">Overview</a></dd>
@@ -67,20 +64,6 @@ Tester package makes everything posible
 				
 			
 				
-				<dd><a href="#JSONTest">type JSONTest</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="#NewJSONTest">func NewJSONTest(programName, source string, test int) *JSONTest</a></dd>
-				
-				
-					
-					<dd>&nbsp; &nbsp; <a href="#JSONTest.Jsonify">func (jt *JSONTest) Jsonify() (string, error)</a></dd>
-				
-					
-					<dd>&nbsp; &nbsp; <a href="#JSONTest.SetPassedTest">func (jt *JSONTest) SetPassedTest(n int, passed bool, status string)</a></dd>
-				
-			
-				
 				<dd><a href="#Program">type Program</a></dd>
 				
 					
@@ -98,11 +81,18 @@ Tester package makes everything posible
 				<dd><a href="#Tester">type Tester</a></dd>
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#NewTester">func NewTester(in, out []string) *Tester</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#NewTester">func NewTester(programName, source string,
+    in, out []string) *Tester</a></dd>
 				
 				
 					
-					<dd>&nbsp; &nbsp; <a href="#Tester.Test">func (t *Tester) Test(name, source string, in, out []string) *JSONTest</a></dd>
+					<dd>&nbsp; &nbsp; <a href="#Tester.Jsonify">func (t *Tester) Jsonify() (string, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Tester.RunTest">func (t *Tester) RunTest() *Tester</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="#Tester.SetPassedTest">func (t *Tester) SetPassedTest(n int, passed bool, status string)</a></dd>
 				
 			
 			
@@ -119,8 +109,6 @@ Tester package makes everything posible
 				<a href="/target/compiler.go">compiler.go</a>
 			
 				<a href="/target/tester.go">tester.go</a>
-			
-				<a href="/target/types.go">types.go</a>
 			
 			</span>
 			</p>
@@ -143,7 +131,7 @@ Tester package makes everything posible
 		
 			
 			
-			<h2 id="Data">type <a href="/target/types.go?s=311:584#L6">Data</a></h2>
+			<h2 id="Data">type <a href="/target/compiler.go?s=433:706#L13">Data</a></h2>
 			<pre>type Data struct {
     <span class="comment">// Number of the test.</span>
     Number <a href="/pkg/builtin/#int">int</a>
@@ -172,73 +160,7 @@ The data struct represents the number of the test and the I/O
 		
 			
 			
-			<h2 id="JSONTest">type <a href="/target/types.go?s=679:1317#L20">JSONTest</a></h2>
-			<pre>type JSONTest struct {
-    <span class="comment">// Unique ID for the test</span>
-    ID <a href="/pkg/builtin/#string">string</a>
-    <span class="comment">// The name of the program</span>
-    Program <a href="/pkg/builtin/#string">string</a>
-    <span class="comment">// The name of the file with the source code of the program</span>
-    Source <a href="/pkg/builtin/#string">string</a>
-    <span class="comment">// If the program can be compiled or not.</span>
-    CouldCompile <a href="/pkg/builtin/#bool">bool</a>
-    <span class="comment">// Number of the tests to be runned</span>
-    Count <a href="/pkg/builtin/#int">int</a>
-    <span class="comment">// Array with the passed and unpassed test. The only purpose for</span>
-    <span class="comment">// This field is check which test are passed.</span>
-    PassedTest []<a href="/pkg/builtin/#bool">bool</a>
-    <span class="comment">// Some info about the test. Here are all the errors, comparsion</span>
-    <span class="comment">// between the I/O, etc.</span>
-    Status []<a href="/pkg/builtin/#string">string</a>
-}</pre>
-			<p>
-Main class that holds all the data of the test. Should be more
-extended in the future.
-</p>
-
-
-			
-
-			
-
-			
-
-			
-				
-				<h3 id="NewJSONTest">func <a href="/target/tester.go?s=366:430#L11">NewJSONTest</a></h3>
-				<pre>func NewJSONTest(programName, source <a href="/pkg/builtin/#string">string</a>, test <a href="/pkg/builtin/#int">int</a>) *<a href="#JSONTest">JSONTest</a></pre>
-				<p>
-Creates a new generic JsonTest.
-</p>
-
-				
-			
-
-			
-				
-				<h3 id="JSONTest.Jsonify">func (*JSONTest) <a href="/target/tester.go?s=755:801#L24">Jsonify</a></h3>
-				<pre>func (jt *<a href="#JSONTest">JSONTest</a>) Jsonify() (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
-				<p>
-Jsonify converts the struct into an json string well formatted
-</p>
-
-				
-				
-			
-				
-				<h3 id="JSONTest.SetPassedTest">func (*JSONTest) <a href="/target/tester.go?s=988:1057#L33">SetPassedTest</a></h3>
-				<pre>func (jt *<a href="#JSONTest">JSONTest</a>) SetPassedTest(n <a href="/pkg/builtin/#int">int</a>, passed <a href="/pkg/builtin/#bool">bool</a>, status <a href="/pkg/builtin/#string">string</a>)</pre>
-				<p>
-Set a new test with the value if the test pass or not.
-</p>
-
-				
-				
-			
-		
-			
-			
-			<h2 id="Program">type <a href="/target/types.go?s=77:244#L1">Program</a></h2>
+			<h2 id="Program">type <a href="/target/compiler.go?s=199:366#L5">Program</a></h2>
 			<pre>type Program struct {
     <span class="comment">// A label for the program.</span>
     Label <a href="/pkg/builtin/#string">string</a>
@@ -258,7 +180,7 @@ An abstract layer of a program.
 
 			
 				
-				<h3 id="Compiler">func <a href="/target/compiler.go?s=320:358#L8">Compiler</a></h3>
+				<h3 id="Compiler">func <a href="/target/compiler.go?s=852:890#L28">Compiler</a></h3>
 				<pre>func Compiler(source <a href="/pkg/builtin/#string">string</a>) *<a href="#Program">Program</a></pre>
 				<p>
 Creates a compiler for the program, the output it&#39;s the same
@@ -269,7 +191,7 @@ exec files
 				
 			
 				
-				<h3 id="NewProgram">func <a href="/target/compiler.go?s=609:652#L17">NewProgram</a></h3>
+				<h3 id="NewProgram">func <a href="/target/compiler.go?s=1141:1184#L37">NewProgram</a></h3>
 				<pre>func NewProgram(executable <a href="/pkg/builtin/#string">string</a>) *<a href="#Program">Program</a></pre>
 				<p>
 Creates a new program with the name of the executable
@@ -280,7 +202,7 @@ Creates a new program with the name of the executable
 
 			
 				
-				<h3 id="Program.Run">func (*Program) <a href="/target/compiler.go?s=960:1024#L28">Run</a></h3>
+				<h3 id="Program.Run">func (*Program) <a href="/target/compiler.go?s=1492:1556#L48">Run</a></h3>
 				<pre>func (c *<a href="#Program">Program</a>) Run(channelOut chan <a href="#Data">Data</a>, input <a href="/pkg/builtin/#string">string</a>, n <a href="/pkg/builtin/#int">int</a>)</pre>
 				<p>
 Runs te program with the input and the number of the test
@@ -295,9 +217,28 @@ gorutines in the main program.
 		
 			
 			
-			<h2 id="Tester">type <a href="/target/types.go?s=1356:1420#L40">Tester</a></h2>
+			<h2 id="Tester">type <a href="/target/tester.go?s=131:906#L2">Tester</a></h2>
 			<pre>type Tester struct {
-    Inputs  []<a href="/pkg/builtin/#string">string</a>
+    <span class="comment">// Unique ID for the test</span>
+    ID <a href="/pkg/builtin/#string">string</a>
+    <span class="comment">// The name of the program</span>
+    Program <a href="/pkg/builtin/#string">string</a>
+    <span class="comment">// The name of the file with the source code of the program</span>
+    Source <a href="/pkg/builtin/#string">string</a>
+    <span class="comment">// If the program can be compiled or not.</span>
+    CouldCompile <a href="/pkg/builtin/#bool">bool</a>
+    <span class="comment">// Number of the tests to be runned</span>
+    Count <a href="/pkg/builtin/#int">int</a>
+    <span class="comment">// Array with the passed and unpassed test. The only purpose for</span>
+    <span class="comment">// This field is check which test are passed.</span>
+    PassedTest []<a href="/pkg/builtin/#bool">bool</a>
+    <span class="comment">// Some info about the test. Here are all the errors, comparsion</span>
+    <span class="comment">// between the I/O, etc.</span>
+    Status []<a href="/pkg/builtin/#string">string</a>
+
+    <span class="comment">// Inputs for the tests passed from stdin</span>
+    Inputs []<a href="/pkg/builtin/#string">string</a>
+    <span class="comment">// Outputs of the program</span>
     Outputs []<a href="/pkg/builtin/#string">string</a>
 }</pre>
 			<p>
@@ -313,8 +254,9 @@ Structs with the Array of the I/O
 
 			
 				
-				<h3 id="NewTester">func <a href="/target/tester.go?s=1222:1262#L39">NewTester</a></h3>
-				<pre>func NewTester(in, out []<a href="/pkg/builtin/#string">string</a>) *<a href="#Tester">Tester</a></pre>
+				<h3 id="NewTester">func <a href="/target/tester.go?s=1215:1300#L36">NewTester</a></h3>
+				<pre>func NewTester(programName, source <a href="/pkg/builtin/#string">string</a>,
+    in, out []<a href="/pkg/builtin/#string">string</a>) *<a href="#Tester">Tester</a></pre>
 				<p>
 Creates a new Tester class. This is the main struct in the program.
 </p>
@@ -324,10 +266,30 @@ Creates a new Tester class. This is the main struct in the program.
 
 			
 				
-				<h3 id="Tester.Test">func (*Tester) <a href="/target/tester.go?s=1637:1707#L56">Test</a></h3>
-				<pre>func (t *<a href="#Tester">Tester</a>) Test(name, source <a href="/pkg/builtin/#string">string</a>, in, out []<a href="/pkg/builtin/#string">string</a>) *<a href="#JSONTest">JSONTest</a></pre>
+				<h3 id="Tester.Jsonify">func (*Tester) <a href="/target/tester.go?s=1826:1869#L57">Jsonify</a></h3>
+				<pre>func (t *<a href="#Tester">Tester</a>) Jsonify() (<a href="/pkg/builtin/#string">string</a>, <a href="/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Jsonify converts the struct into an json string well formatted
+</p>
+
+				
+				
+			
+				
+				<h3 id="Tester.RunTest">func (*Tester) <a href="/target/tester.go?s=2499:2534#L80">RunTest</a></h3>
+				<pre>func (t *<a href="#Tester">Tester</a>) RunTest() *<a href="#Tester">Tester</a></pre>
 				<p>
 Main function in the program. Runs a single gorutine for every test.
+</p>
+
+				
+				
+			
+				
+				<h3 id="Tester.SetPassedTest">func (*Tester) <a href="/target/tester.go?s=2055:2121#L66">SetPassedTest</a></h3>
+				<pre>func (t *<a href="#Tester">Tester</a>) SetPassedTest(n <a href="/pkg/builtin/#int">int</a>, passed <a href="/pkg/builtin/#bool">bool</a>, status <a href="/pkg/builtin/#string">string</a>)</pre>
+				<p>
+Set a new test with the value if the test pass or not.
 </p>
 </body>
 </html>
