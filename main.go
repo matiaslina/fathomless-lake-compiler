@@ -35,6 +35,17 @@ func init () {
     http.HandleFunc ("/api", APIHandler)
     http.HandleFunc ("/docs", DocsHandler)
     http.Handle ("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir("views/styles"))))
+    
+    // Just a test handler
+    http.HandleFunc ("/test", TestHandler)
+}
+
+func TestHandler (w http.ResponseWriter, req *http.Request) {
+    err := req.ParseMultipartForm(2048)
+    if err != nil {
+        return
+    }
+    log.Println(req.Form)
 }
 
 func DocsHandler (w http.ResponseWriter, req *http.Request) {
