@@ -5,12 +5,33 @@
 		<title> Compiler </title>
 		
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-		</head>
+		<script language="javascript">
+            window.onload = function () {
+                var count = 0;
+                var button = document.getElementById("add-input");
+                var inputs_div = document.getElementById("new-inputs");
+                button.onclick = function () {
+                    inputs_div.innerHTML += '<span>Test '+count+'</span><input name="input" type="text"/>'
+                    count++;
+                    return false;
+                };
+            }
+        </script>
+        <style>
+            #new-inputs > * {
+                display: block;
+            }
+        </style>
+        </head>
 	<body>
 		<h2>Submit your code!</h2>
-		<form method="post" enctype="multipart/form-data" action="/submitted">
-		    <input type="file" name="file">
-		    <input type="submit" value="upload">
+		<form method="post" enctype="multipart/form-data" action="/test">
+		    <input type="file" name="file" />
+            </br>
+            <div id="new-inputs"></div>
+            <button id="add-input">Add new input</button>
+            </br>
+		    <input type="submit" value="upload"/>
 		</form>
 	</body>
 </html>
