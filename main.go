@@ -8,7 +8,7 @@ import (
     "net/http"
     "os"
     "os/signal"
-    "fathomless-lake-compiler/tester"
+    "github.com/matiaslina/flcompiler"
     "fathomless-lake-compiler/firebase"
     "syscall"
 )
@@ -62,8 +62,8 @@ func RootHandler (w http.ResponseWriter, req *http.Request) {
     }
 }
 
-func StartTest (tc chan *tester.Tester, name, source string) {
-    MyTester := tester.NewTester (name, source, Inputs, Outputs)
+func StartTest (tc chan *flcompiler.Tester, name, source string) {
+    MyTester := flcompiler.NewTester (name, source, Inputs, Outputs)
     tc <- MyTester.RunTest()
 }
 
@@ -81,8 +81,8 @@ func SubmittedHandler (w http.ResponseWriter, req *http.Request) {
     if err != nil {
         fmt.Println ("[step 3] Oh.. can't set the file in the disk :/")
     }
-    ch := make (chan *tester.Tester)
-    go StartTest(ch, "prueba", tester.FOLDER + handler.Filename)
+    ch := make (chan *flcompiler.Tester)
+    go StartTest(ch, "prueba", flcompiler.FOLDER + handler.Filename)
     
     log.Println("Running app")
     
